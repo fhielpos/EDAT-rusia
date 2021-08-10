@@ -1,37 +1,29 @@
 package edat.rusia.map;
+import edat.rusia.lista.Lista;
 
 public class Nodo {
     private String etiqueta;
-    private int vecinos;
-    private Distancia[] rutas;
-    private Nodo[] adyacentes;
+    private Lista rutas;
+    private Lista adyacentes;
 
     public Nodo(String unaEtiqueta) {
         this.etiqueta = unaEtiqueta;
-        this.adyacentes = new Nodo[100];
-        this.vecinos = 0;
-        this.rutas = new Distancia[100];
+        this.adyacentes = new Lista();
+        this.rutas = new Lista();
     }
 
     public boolean agregarAdyacente(Nodo nuevoAdyacente, int unaDistancia) {
-        // Busco si existe un vecino ya cargado con ese nombre para evitar recursión
-        // infinita
-        if (buscarVecino(nuevoAdyacente.getEtiqueta()) == null) {
+        // Buscar en la lista si ya existe dicho nodo
+        if (this.adyacentes.localizar(nuevoAdyacente) == -1) {
 
-            // System.out.println("Agregando nodo: " + nuevoAdyacente.getEtiqueta())
+            System.out.println("Agregando nodo: " + nuevoAdyacente.getEtiqueta());
 
             // Creo la ruta
             Distancia rutaVecino = new Distancia(this.etiqueta, nuevoAdyacente.getEtiqueta(), unaDistancia);
 
             // Agrego la ruta a la lista de rutas
-            rutas[this.vecinos] = rutaVecino;
-
-            // Agrego el nuevo nodo a la lista de adyacentes
-            this.adyacentes[this.vecinos] = nuevoAdyacente;
-
-            // Aumento la cantidad de vecinos para evitar otra recursión infinita
-            this.vecinos++;
-
+            this.rutas.insertar(rutaVecino, this.rutas.longitud()+1);
+        
             // Agrego al nodo actual al vecino
             nuevoAdyacente.agregarAdyacente(this, unaDistancia);
 
@@ -45,12 +37,13 @@ public class Nodo {
 
     private Nodo buscarVecino(String unVecino) {
         // Buscar el nodo correspondiente a un vecino
-        int iterador = 0;
+        int iterador = 1;
         Nodo vecino = null;
-        if (this.vecinos != 0) {
-            while ((vecino == null) && iterador < this.vecinos) {
-                if (this.adyacentes[iterador].getEtiqueta().toLowerCase().equals(unVecino.toLowerCase()))
-                    vecino = this.adyacentes[iterador];
+        if (!this.adyacentes.esVacia()) {
+            int cantVecinos = this.adyacentes.longitud();
+            while ((vecino == null) && iterador <= cantVecinos) {
+                if (((Nodo) this.adyacentes.recuperar(iterador)).getEtiqueta().toLowerCase().equals(unVecino.toLowerCase()))
+                    vecino = (Nodo) this.adyacentes.recuperar(iterador);
                 else
                     iterador++;
             }
@@ -90,11 +83,12 @@ public class Nodo {
         int iterador = 0;
         Distancia rutaDestino = null;
 
-        if (this.vecinos != 0) {
-            while ((rutaDestino == null) && iterador < this.vecinos) {
+        if (!this.adyacentes.esVacia()) {
+            int cantVecinos = this.adyacentes.longitud();
+            while ((rutaDestino == null) && iterador < cantVecinos) {
                 // Comparar strings en lowercase
-                if (rutas[iterador].getDestino().toLowerCase().equals(unDestino.toLowerCase()))
-                    rutaDestino = rutas[iterador];
+                if (((Distancia) this.rutas.recuperar(iterador)).getDestino().toLowerCase().equals(unDestino.toLowerCase()))
+                    rutaDestino = (Distancia) this.rutas.recuperar(iterador);
                 else
                     iterador++;
             }
@@ -109,13 +103,28 @@ public class Nodo {
 
     public void imprimirDistancias() {
         // Imprime todas las distancias entre los vecinos
-        if (this.vecinos > 0) {
-            for (int i = 0; i < this.vecinos; i++) {
-                System.out.println(rutas[i].toString());
+        if (!this.adyacentes.esVacia()) {
+            int cantVecinos = this.adyacentes.longitud();
+            for (int i = 1; i <= cantVecinos; i++) {
+                System.out.println(rutas.recuperar(i).toString());
             }
         }
         else
             System.out.println(this.etiqueta + ": Esta ciudad no tiene niguna ruta cargada");
+    }
+
+    public void getVecinos(){
+        for(int i=1;i<=adyacentes.longitud();i++){
+            System.out.println("Vecino para: "+this.etiqueta);
+            System.out.println(this.adyacentes.recuperar(i).toString());
+        }
+        for(int i=1;i<=rutas.longitud();i++){
+            //System.out.println(this.rutas.toString());
+        }
+    }
+
+    public String toString(){
+        return this.etiqueta;
     }
 
 }

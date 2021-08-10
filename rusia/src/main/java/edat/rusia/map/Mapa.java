@@ -1,26 +1,23 @@
 package edat.rusia.map;
 
+import edat.rusia.lista.Lista;
+
 public class Mapa {
-    private Nodo[] ciudades;
-    private int ciudadesCargadas;
+    private Lista ciudades;
 
     public Mapa(int cantCiudades) {
-        ciudades = new Nodo[cantCiudades];
-        ciudadesCargadas = 0;
+        ciudades = new Lista();
     }
 
     public boolean agregarCiudad(Nodo nuevaCiudad) {
-        if (this.ciudadesCargadas != this.ciudades.length) {
-            this.ciudades[ciudadesCargadas] = nuevaCiudad;
-            this.ciudadesCargadas++;
-            return true;
-        } else
-            return false;
+        this.ciudades.insertar(nuevaCiudad, this.ciudades.longitud()+1);
+
+        return true;
     }
 
     public boolean agregarAdyacente(String ciudadOrigen, String ciudadDestino, int distancia) {
         // Si hay ciudades cargadas:
-        if (this.ciudadesCargadas != 0) {
+        if (!this.ciudades.esVacia()) {
             // Buscar los dos nodos
             Nodo nodoOrigen = buscarCiudad(ciudadOrigen);
             Nodo nodoDestino = buscarCiudad(ciudadDestino);
@@ -41,13 +38,14 @@ public class Mapa {
     private Nodo buscarCiudad(String unaCiudad) {
         // Buscar el nodo correspondiente para una ciudad
 
-        int iterador = 0;
+        int iterador = 1;
+        int cantCiudades = this.ciudades.longitud();
         Nodo ciudad = null;
 
-        while (iterador < this.ciudadesCargadas && ciudad == null) {
+        while (iterador <= cantCiudades && ciudad == null) {
             // Si la etiqueta del nodo coincide con la ciudad buscada
-            if (this.ciudades[iterador].getEtiqueta().toLowerCase().equals(unaCiudad.toLowerCase())) {
-                ciudad = this.ciudades[iterador];
+            if (((Nodo) this.ciudades.recuperar(iterador)).getEtiqueta().toLowerCase().equals(unaCiudad.toLowerCase())) {
+                ciudad = (Nodo) this.ciudades.recuperar(iterador);
             } else {
                 iterador++;
             }
@@ -58,9 +56,19 @@ public class Mapa {
     public void imprimirDistancias() {
         // Imprime todas las distancias para cada uno de las ciudades 
         // Se espera que imprima valores duplicados ya que cada ciudad tiene su propia lista
-        if (this.ciudadesCargadas != 0) {
-            for (int i = 0; i < ciudadesCargadas; i++) {
-                this.ciudades[i].imprimirDistancias();
+        int cantCiudades = this.ciudades.longitud();
+        if (!this.ciudades.esVacia()) {
+            for (int i = 0; i <= cantCiudades; i++) {
+                ((Nodo) this.ciudades.recuperar(i)).imprimirDistancias();
+            }
+        }
+    }
+
+    public void imprimirCiudades() {
+        int cantCiudades = this.ciudades.longitud();
+        if (!this.ciudades.esVacia()) {
+            for (int i = 1; i <= cantCiudades; i++) {
+                ((Nodo) this.ciudades.recuperar(i)).getVecinos();
             }
         }
     }

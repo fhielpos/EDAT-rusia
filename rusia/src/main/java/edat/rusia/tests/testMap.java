@@ -8,7 +8,7 @@ public class testMap{
 
         Mapa rusia = inicializarNodos();
 
-        rusia.imprimirDistancias();
+        rusia.imprimirCiudades();
 
     }
 
