@@ -23,6 +23,9 @@ public class Nodo {
 
             // Agrego la ruta a la lista de rutas
             this.rutas.insertar(rutaVecino, this.rutas.longitud()+1);
+
+            // Agrego al vecino
+            this.adyacentes.insertar(nuevoAdyacente, this.adyacentes.longitud()+1);
         
             // Agrego al nodo actual al vecino
             nuevoAdyacente.agregarAdyacente(this, unaDistancia);
