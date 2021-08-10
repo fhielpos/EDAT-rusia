@@ -64,7 +64,7 @@ public class Lista {
                     aux = aux.getEnlace();
                     i++;
                 }
-            } while(i < longitud && posicion == -1); // Si posicion ya no es -1 o si llego al limite, terminar
+            } while(i <= longitud && posicion == -1); // Si posicion ya no es -1 o si llego al limite, terminar
         }
         return posicion;
     }

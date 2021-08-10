@@ -13,8 +13,8 @@ public class NodoLista {
         this.elemento = unElemento;
     }
 
-    public void setEnlace(Object unElemento){
-        this.elemento = unElemento;
+    public void setEnlace(NodoLista unEnlace){
+        this.enlace = unEnlace;
     }
 
     public Object getElemento(){
